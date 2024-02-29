@@ -1,3 +1,4 @@
+#library using this project
 from googleapiclient.discovery import build
 import googleapiclient.discovery
 import pymongo
@@ -5,6 +6,7 @@ import psycopg2
 import pandas as pd
 import streamlit as st
 
+#google api key
 api_key =< your google api Key >
 
 api_service_name = "youtube"
@@ -458,6 +460,7 @@ question=st.selectbox("select your questions",("1. What are the names of all the
                                                "9. What is the average duration of all videos in each channel, and what are their corresponding channel names?",
                                                "10. Which videos have the highest number of comments, and what are their corresponding channel names?"))
 
+#1
 if question=="1. What are the names of all the videos and their corresponding channels?":
     query1='''select video_name as videos,channel_name as channelname from videos'''
     cursor.execute(query1)
@@ -466,6 +469,7 @@ if question=="1. What are the names of all the videos and their corresponding ch
     df1=pd.DataFrame(t1,columns=["video name","channel name"])
     st.write(df1)
 
+#2
 elif question== "2. Which channels have the most number of videos, and how many videos do they have?":
     query2='''select channel_name as channelname,total_videos as no_videos from channels
               order by total_videos desc'''
@@ -475,6 +479,7 @@ elif question== "2. Which channels have the most number of videos, and how many 
     df2=pd.DataFrame(t2,columns=["channel name","No of videos"])
     st.write(df2)
 
+#3
 elif question== "3. What are the top 10 most viewed videos and their respective channels?":
     query3='''select views_count as views,channel_name as channelname,video_name as videoname from videos
                where views_count is not null order by views_count desc limit 10'''
@@ -484,6 +489,7 @@ elif question== "3. What are the top 10 most viewed videos and their respective 
     df3=pd.DataFrame(t3,columns=["views","channel name","video name"])
     st.write(df3)
 
+#4
 elif question== "4. How many comments were made on each video, and what are their corresponding video names?":
     query4='''select comments_count as no_comments,video_name as videoname from videos where comments_count is not null'''
     cursor.execute(query4)
@@ -491,7 +497,8 @@ elif question== "4. How many comments were made on each video, and what are thei
     t4=cursor.fetchall()
     df4=pd.DataFrame(t4,columns=["no of comments","video name"])
     st.write(df4)
-    
+
+#5
 elif question== "5. Which videos have the highest number of likes, and what are their corresponding channel names?":
     query5='''select video_name as videoname, channel_name as channelname, likes_count as likescount 
               from videos where likes_count is not null order by likes_count desc'''
@@ -500,7 +507,8 @@ elif question== "5. Which videos have the highest number of likes, and what are 
     t5=cursor.fetchall()
     df5=pd.DataFrame(t5,columns=["video name","channel name","likescount"])
     st.write(df5)
-    
+
+#6
 elif question== "6. What is the total number of likes for each video, and what are their corresponding video names?":
     query6='''select likes_count as likescount, video_name as videoname from videos'''
     cursor.execute(query6)
@@ -509,6 +517,7 @@ elif question== "6. What is the total number of likes for each video, and what a
     df6=pd.DataFrame(t6,columns=["likescount","video name"])
     st.write(df6)
 
+#7
 elif question== "7. What is the total number of views for each channel, and what are their corresponding channel names?":
     query7='''select channel_name as channelname, channel_views as totalviews from channels'''
     cursor.execute(query7)
@@ -516,7 +525,8 @@ elif question== "7. What is the total number of views for each channel, and what
     t7=cursor.fetchall()
     df7=pd.DataFrame(t7,columns=["channel name","total views"])
     st.write(df7)
-    
+
+#8
 if question== "8. What are the names of all the channels that have published videos in the year 2022?":
     query8='''select video_name as videoname, publishedat as video_publish,channel_name as channelname from videos
                where extract (year from publishedat)=2022'''
@@ -525,7 +535,7 @@ if question== "8. What are the names of all the channels that have published vid
     t8=cursor.fetchall()
     df8=pd.DataFrame(t8,columns=["video name","video_publish","channel name"])
     st.write(df8)
-    
+ #9   
 elif question== "9. What is the average duration of all videos in each channel, and what are their corresponding channel names?":
     query9='''select channel_name as channelname, AVG(duration) as avg_duration from videos group by channel_name'''
     cursor.execute(query9)
@@ -541,7 +551,7 @@ elif question== "9. What is the average duration of all videos in each channel, 
         T9.append(dict(chnltitle=chnl_title,avgduration=average_duration_str))
     df=pd.DataFrame(T9)
     st.write(df)
-    
+ #10   
 elif question== "10. Which videos have the highest number of comments, and what are their corresponding channel names?":
     query10='''select video_name as videoname, channel_name as channelname, comments_count as comments from videos
              where comments_count is not null order by comments_count desc'''
@@ -550,3 +560,7 @@ elif question== "10. Which videos have the highest number of comments, and what 
     t10=cursor.fetchall()
     df10=pd.DataFrame(t10,columns=["video name","channel name","comments"])
     st.write(df10)
+
+#SQL connection close
+cursor.close()
+myconnection.close()
