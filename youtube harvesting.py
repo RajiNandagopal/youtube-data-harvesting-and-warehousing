@@ -380,30 +380,44 @@ def show_comments_table():
 st.title(":red[YOUTUBE DATA HARVESTING AND WAREHOUSING]")
 st.header("Collections Of Youtube Channel Data")
 
-channel_id=st.text_input("Enter the channel ID")
+# Step 1: Enter Channel ID and Show Channel Information
+channel_id = st.text_input("Enter the channel ID")
 
-if st.button("collect data"):
-    ch_ids=[]
-    mydb=client["Youtube_data"]
-    coll=mydb["Channel_details"]
-    for ch_data in coll.find({},{"_id":0,"channel_information":1}):
-        ch_ids.append(ch_data["channel_information"]["Channel_Id"])
-        
-    if channel_id in ch_ids:
-        st.success("Channel details of the given channel id already exists")
-            
-    else:
-        insert=channel_details(channel_id)
+if st.button("Show Channel Information"):
+    if channel_id:
+        # Call the function to fetch and display channel information
+        Channel_info = channel_info(channel_id)
+        if Channel_info:
+            channel_information_dict = {"channel information": Channel_info}
+            st.write(channel_information_dict)
+        else:
+            st.warning("Channel information not found for the given ID.")
+
+# Step 2: Upload to MongoDB
+if st.button("Upload to MongoDB"):
+    if channel_id:
+        # Call the function to upload data to MongoDB
+        insert = channel_details(channel_id)
         st.success(insert)
 
-if st.button("view channel information"):
+# Step 3: Show Uploaded Channels
+uploaded_channels = []
+mydb = client["Youtube_data"]
+coll = mydb["Channel_details"]
+for ch_data in coll.find({}, {"_id": 0, "channel_information": 1}):
+    uploaded_channels.append(ch_data["channel_information"]["Channel_Name"])
+
+selected_channel = st.selectbox("Select uploaded channel", uploaded_channels)
+
+# Display channel, video, and comment information for the selected channel
+if selected_channel:
     if channel_id:
-            Channel_info = channel_info(channel_id)
-            if Channel_info:
-                channel_information_dict ={"channel information":Channel_info}
-                st.write(channel_information_dict)
-            else:
-                st.warning("Channel information not found for the given ID.")
+        Channel_info = channel_info(channel_id)
+        if Channel_info:
+            channel_information_dict ={"channel information":Channel_info}
+            st.write(channel_information_dict)
+        else:
+            st.warning("Channel information not found for the given ID.")
 
     if channel_id:
         vi_ids=video_Ids(channel_id)
@@ -422,10 +436,16 @@ if st.button("view channel information"):
                 st.warning("Comments information not found for the given channel ID.")
         else:
             st.warning("Video information not found for the given channel ID.")
+    # Fetch and display channel, video, and comment information
+    # You can use the selected_channel variable to filter data from MongoDB
 
-if st.button("Migrate to sql"):
-    Table=tables()
-    st.success(Table)
+# Step 4: Migrate Data to SQL
+    if st.button("Migrate to SQL"):
+        # Call the function to migrate data from MongoDB to SQL
+        Table = tables()
+        st.success(Table)
+
+# Step 5: Tables of channels, videos, comment information
     
 show_table=st.radio("SELECT THE TABLE BELOW TO VIEW",("CHANNELS","VIDEOS","COMMENTS"))
 
