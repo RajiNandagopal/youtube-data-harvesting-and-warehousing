@@ -43,9 +43,9 @@ Features:
 
 Retrieve data from the YouTube API, including channel information, videos, and comments.
 Store the retrieved data in a MongoDB database. Option to check wheather the respective channel Data is exist or Not in MongoDb.
-Migrate the data to a MySQL data warehouse.
+Migrate the data to a SQL data warehouse.
 Analyze data using Streamlit.
-Perform queries on the MySQL data warehouse.
+Perform queries on the SQL data warehouse.
 Display the list of channel name's along with channel id, views, subscription, likes,comments.
 
 Retrieving data from the YouTube API
