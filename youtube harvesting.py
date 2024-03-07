@@ -411,6 +411,12 @@ selected_channel = st.selectbox("Select uploaded channel", uploaded_channels)
 
 # Display channel, video, and comment information for the selected channel
 if selected_channel:
+
+    channel_id = None
+    for ch_data in coll.find({"channel_information.Channel_Name": selected_channel}):
+        channel_id = ch_data["channel_information"]["Channel_Id"]
+        break
+        
     if channel_id:
         Channel_info = channel_info(channel_id)
         if Channel_info:
